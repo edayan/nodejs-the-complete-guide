@@ -25,7 +25,7 @@ module.exports = class Product {
     });
   }
 
-  static fetchAll() {
+  static fetchAll(callBack) {
     const p = path.join(
       path.dirname(process.mainModule.filename),
       'data',
@@ -33,9 +33,9 @@ module.exports = class Product {
     );
     fs.readFile(p, (err, fileContent) => {
       if (err) {
-        return [];
+        return callBack([]);
       }
-      return JSON.parse(fileContent);
+      return callBack(JSON.parse(fileContent));
     });
   }
 };
