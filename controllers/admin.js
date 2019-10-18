@@ -29,7 +29,6 @@ exports.getEditProduct = (req, res, next) => {
     if (!product) {
       return res.redirect('/');
     }
-    console.log(product);
     res.render('admin/edit-product', {
       pageTitle: 'Edit Product',
       path: '/admin/edit-product',
