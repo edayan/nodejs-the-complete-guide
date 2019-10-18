@@ -10,6 +10,10 @@ exports.getProducts = (req, res, next) => {
   });
 };
 
+exports.getProduct = (req, res, next) => {
+  const prodId= req.params.productId;
+  res.redirect('/');
+}
 exports.getIndex = (req, res, next) => {
   Product.fetchAll(products => {
     res.render('shop/index', {
@@ -33,9 +37,11 @@ exports.getOrders = (req, res, next) => {
     pageTitle: 'Your Orders'
   });
 };
+
 exports.getCheckout = (req, res, next) => {
   res.rener('/shop/checkout', {
     pth: '/checkout',
     pageTitle: 'Checkout'
   });
 };
+
