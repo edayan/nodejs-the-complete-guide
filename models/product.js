@@ -1,4 +1,6 @@
+const db = require('../util/database');
 const Cart = require('./cart');
+
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
@@ -11,7 +13,9 @@ module.exports = class Product {
 
   save() {}
 
-  static fetchAll() {}
+  static fetchAll() {
+    return db.execute('SELECT * FROM products')
+  }
 
   static findById(id) {}
 
