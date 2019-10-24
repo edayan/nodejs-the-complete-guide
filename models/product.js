@@ -1,7 +1,6 @@
 const db = require('../util/database');
 const Cart = require('./cart');
 
-
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
     this.id = id;
@@ -11,10 +10,15 @@ module.exports = class Product {
     this.price = +price;
   }
 
-  save() {}
+  save() {
+    return db.execute(
+      `INSERT INTO products(title, price, description, imageUrl) VALUES(?, ?, ?, ?)`,
+      [this.title, this.price, this.description, this.imageUrl]
+    );
+  }
 
   static fetchAll() {
-    return db.execute('SELECT * FROM products')
+    return db.execute('SELECT * FROM products');
   }
 
   static findById(id) {}
