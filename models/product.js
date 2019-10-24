@@ -27,4 +27,4 @@ const Product = sequelize.define('product', {
   }
 });
 
-moduke.exports = Product;
+module.exports = Product;
