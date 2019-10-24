@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const errorController = require('./controllers/error');
 
 const sequelize = require('./util/database');
+const Product = require('./models/product');
+const User = require('./models/user');
 
 const app = express();
 
@@ -23,9 +25,22 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
+
 sequelize
+  //.sync({force: true})// overwrite the existing tables
   .sync()
   .then(result => {
+    return User.findByPk(1);
+  })
+  .then(user => {
+    if (!user) {
+      return User.create({ name: 'Saju', email: 'edayan@exgratia.in' });
+    }
+    return Promise.resolve(user); // =return  user
+  })
+  .then(user => {
     const PORT = 3000;
     app.listen(PORT, () => {
       console.log(`App listening in port:${PORT}`);
