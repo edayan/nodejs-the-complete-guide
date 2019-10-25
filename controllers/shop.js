@@ -82,7 +82,7 @@ exports.postCart = (req, res, next) => {
         product = products[0];
       }
       if (product) {
-        const oldQuantity = product.CartItem.quantity;
+        const oldQuantity = product.cartItem.quantity;
         newQuantity = oldQuantity + 1;
         return product;
       }
@@ -108,7 +108,7 @@ exports.postDeleteCartItem = (req, res, next) => {
     })
     .then(products => {
       const product = products[0];
-      return product.CartItem.destroy();
+      return product.cartItem.destroy();
     })
     .then(result => {
       res.redirect('/cart');
@@ -132,7 +132,7 @@ exports.postOrder = (req, res, next) => {
           return order.addProducts(
             products.map(product => {
               product.orderItem = {
-                quantity: product.CartItem.quantity
+                quantity: product.cartItem.quantity
               };
               return product;
             })
@@ -150,10 +150,10 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  res.render('shop/orders', {
-    path: '/orders',
-    pageTitle: 'Your Orders'
-  });
+      res.render('shop/orders', {
+        path: '/orders',
+        pageTitle: 'Your Orders',
+      });
 };
 
 exports.getCheckout = (req, res, next) => {
