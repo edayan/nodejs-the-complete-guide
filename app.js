@@ -46,8 +46,8 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
-  .sync({force: true})// overwrite the existing tables
-  //.sync()
+  //.sync({force: true})// overwrite the existing tables
+  .sync()
   .then(result => {
     return User.findByPk(1);
   })
@@ -56,6 +56,9 @@ sequelize
       return User.create({ name: 'Saju', email: 'edayan@exgratia.in' });
     }
     return Promise.resolve(user); // =return  user
+  })
+  .then(user => {
+    return user.createCart();
   })
   .then(user => {
     const PORT = 3000;
