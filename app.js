@@ -52,8 +52,8 @@ Order.belongsToMany(Product, { through: OrderItem });
 Product.belongsToMany(Order, { through: OrderItem });
 
 sequelize
-  .sync({force: true})// overwrite the existing tables
-  //.sync()
+  //.sync({force: true})// overwrite the existing tables
+  .sync()
   .then(result => {
     return User.findByPk(1);
   })
