@@ -83,8 +83,7 @@ exports.postCart = (req, res, next) => {
       }
       let newQuantity = 1;
       if (product) {
-        // will do later
-        const oldQuantity = product.cartItem.quantity;
+        const oldQuantity = product.CartItem.quantity;
         newQuantity = oldQuantity + 1;
         return fetchedCart.addProduct(product, {
           through: {
