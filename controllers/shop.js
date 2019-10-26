@@ -150,10 +150,21 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
+  req.user
+    .getOrders({ include: [ {model: Product} ] })
+    .then(orders => {
+      console.log(orders);
+      console.log(orders.products);
+      orders.products.forEach(element => {
+        console.log(element);
+      });
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
+        orders: orders
       });
+    })
+    .catch(err => console.log(err));
 };
 
 exports.getCheckout = (req, res, next) => {

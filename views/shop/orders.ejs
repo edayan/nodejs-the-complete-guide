@@ -4,6 +4,17 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
         <main>
+            <% if (orders.length <=0) { %>
             <h1>Nothing there!</h1>
+            <% } else { %>
+                <ul>
+                    <% orders.forEach(order => {  %>
+                    <li> 
+                       <h1># <%=  order.id %></h1> 
+                      
+                    </li>
+                    <% }) %>
+                </ul>
+                <% } %>
         </main>
         <%- include('../includes/end.ejs') %>
