@@ -48,20 +48,21 @@ exports.postSignup = (req, res, next) => {
       if (userDoc) {
         return res.redirect('/');
       }
-      return bcrypt.hash(password, 12);
-    })
-    .then(hashedPassword => {
-      const user = new User({
-        name: 'test',
-        email: email,
-        password: hashedPassword
-      });
-      return user.save();
+      return bcrypt
+        .hash(password, 12)
+        .then(hashedPassword => {
+          const user = new User({
+            name: 'test',
+            email: email,
+            password: hashedPassword
+          });
+          return user.save();
+        })
+        .then(result => {
+          return res.redirect('/login');
+        });
     })
 
-    .then(result => {
-      return res.redirect('/login');
-    })
     .catch(err => {
       console.log(err);
     });
