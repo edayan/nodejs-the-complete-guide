@@ -64,18 +64,6 @@ Order.belongsToMany(Product, { through: OrderItem });
 sequelize
   //.sync({force: true})// overwrite the existing tables
   .sync()
-  .then(result => {
-    return User.findByPk(1);
-  })
-  .then(user => {
-    if (!user) {
-      return User.create({ name: 'Saju', email: 'edayan@exgratia.in' });
-    }
-    return Promise.resolve(user); // =return  user
-  })
-  .then(user => {
-    return user.createCart();
-  })
   .then(user => {
     const PORT = 3000;
     app.listen(PORT, () => {
