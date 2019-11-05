@@ -46,7 +46,10 @@ app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
-  User.findByPk(1)
+  if (!req.session.user) {
+    return next();
+  }
+  User.findByPk(req.session.user.id)
     .then(user => {
       req.user = user;
       next();
