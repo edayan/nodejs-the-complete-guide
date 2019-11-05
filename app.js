@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
@@ -15,7 +16,7 @@ const CartItem = require('./models/cart-item');
 const Order = require('./models/order');
 const OrderItem = require('./models/order-item');
 
-var SequelizeStore = require('connect-session-sequelize')(session.Store); 
+var SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use(
 );
 
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
   User.findByPk(1)

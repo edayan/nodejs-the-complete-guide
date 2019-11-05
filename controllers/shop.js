@@ -51,7 +51,6 @@ exports.getCart = (req, res, next) => {
   req.user
     .getCart()
     .then(cart => {
-      console.log(cart);
       return cart
         .getProducts()
         .then(products => {
@@ -154,11 +153,6 @@ exports.getOrders = (req, res, next) => {
   req.user
     .getOrders({ include: [{ model: Product }] })
     .then(orders => {
-      console.log(orders);
-      console.log(orders.products);
-      orders.products.forEach(element => {
-        console.log(element);
-      });
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
