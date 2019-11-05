@@ -3,10 +3,11 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const csrf = require('csurf');
 
 const errorController = require('./controllers/error');
-
 const sequelize = require('./util/database');
+
 const Product = require('./models/product');
 const User = require('./models/user');
 const Cart = require('./models/cart');
@@ -14,7 +15,10 @@ const CartItem = require('./models/cart-item');
 const Order = require('./models/order');
 const OrderItem = require('./models/order-item');
 
+
 const app = express();
+
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -32,6 +36,8 @@ app.use(
     saveUnInitialized: false
   })
 );
+
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
   User.findByPk(1)
