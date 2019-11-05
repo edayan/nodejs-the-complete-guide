@@ -12,7 +12,7 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  User.findOne({ email: email })
+  User.findOne({ where: { email: email } })
     .then(user => {
       if (!user) {
         req.flash('error', 'invalid email or password.');
@@ -61,7 +61,7 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
-  User.findOne({ email: email })
+  User.findOne({ where: { email: email }})
     .then(userDoc => {
       if (userDoc) {
         return res.redirect('/');
