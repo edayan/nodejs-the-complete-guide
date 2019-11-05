@@ -15,6 +15,8 @@ const CartItem = require('./models/cart-item');
 const Order = require('./models/order');
 const OrderItem = require('./models/order-item');
 
+var SequelizeStore = require('connect-session-sequelize')(session.Store); 
+
 const app = express();
 
 const csrfProtection = csrf();
@@ -31,6 +33,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
     secret: 'my long string secret',
+    store: new SequelizeStore({
+      db: sequelize
+    }),
     resave: false,
     saveUnInitialized: false
   })
