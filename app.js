@@ -15,7 +15,6 @@ const CartItem = require('./models/cart-item');
 const Order = require('./models/order');
 const OrderItem = require('./models/order-item');
 
-
 const app = express();
 
 const csrfProtection = csrf();
@@ -48,6 +47,12 @@ app.use((req, res, next) => {
     .catch(err => {
       console.log(err);
     });
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use('/admin', adminRoutes);
