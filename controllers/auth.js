@@ -1,13 +1,14 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendGridTransport = require('nodemailer-sendgrid-transport');
+const crypto = require('crypto');
 
 const User = require('../models/user');
 const transporter = nodemailer.createTransport(
   sendGridTransport({
     auth: {
       api_key:
-        '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'
+        'my api key'
     }
   })
 );
@@ -136,4 +137,46 @@ exports.getReset = (req, res, next) => {
     pageTitle: 'Reset Password',
     errorMessage: message
   });
-}
+};
+
+exports.postReset = (req, res, next) => {
+  crypto
+    .randomBytes(32, (err, buffer) => {
+      if (err) {
+        console.log(err);
+        return res.redirect('/reset');
+      }
+
+      const token = buffer.toString('hex');
+      User.findOne({ where: { email: req.body.email } })
+        .then(user => {
+          if (!user) {
+            req.flash('error', 'no active user with this email');
+            return res.redirect('/reset');
+          }
+
+          user.resetToken = token;
+          user.resetTokenExpiration = Date.now() + 3600000;
+          return user.save();
+        })
+        .then(result => {
+          res.redirect('/');
+          transporter
+            .sendMail({
+              to: email,
+              from: 'shop@node-complete.com',
+              subject: 'Password reset',
+              html: `
+              <p>You requested for a password reset</p>
+              <p>Click this Link to set <a href="http://localhost:3000/reset/${token}"></a> a new password.</p>
+              `
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
