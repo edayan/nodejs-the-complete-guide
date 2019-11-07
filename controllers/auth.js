@@ -7,8 +7,7 @@ const User = require('../models/user');
 const transporter = nodemailer.createTransport(
   sendGridTransport({
     auth: {
-      api_key:
-        'my api key'
+      api_key: 'my api key'
     }
   })
 );
@@ -150,6 +149,7 @@ exports.postReset = (req, res, next) => {
       const token = buffer.toString('hex');
       User.findOne({ where: { email: req.body.email } })
         .then(user => {
+          console.log(user);
           if (!user) {
             req.flash('error', 'no active user with this email');
             return res.redirect('/reset');
@@ -179,4 +179,25 @@ exports.postReset = (req, res, next) => {
     .catch(err => {
       console.log(err);
     });
+};
+
+exports.getNewPassword = (req, res, next) => {
+  const token = req.params.token;
+  User.findOne({ where: { email: `saju.edayan@gmail.com` } }) //actually extract from token by going to db.
+    .then(user => {
+      let message = req.flash('error');
+      if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
+
+      res.render('auth/new-password', {
+        path: '/new-password',
+        pageTitle: 'New Password',
+        errorMessage: message,
+        userId: user.id
+      });
+    })
+    .catch(err => console.log(err));
 };
