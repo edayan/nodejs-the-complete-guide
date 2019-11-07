@@ -60,22 +60,29 @@ exports.postEditProduct = (req, res, next) => {
   const updatedDesc = req.body.description;
   Product.findByPk(prodId)
     .then(product => {
+      if (product.userId !== req.user.id) {
+        res.redirect('/');
+      }
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.imageUrl = updatedImageUrl;
       product.description = updatedDesc;
-      return product.save();
+      return product.save().then(result => {
+        res.redirect('/admin/products');
+      });
     })
-    .then(result => {
-      res.redirect('/admin/products');
-    })
+
     .catch(err => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findByPk(prodId)
-    .then(product => product.destroy())
+    .then(product => {
+      if (product.userId === req.user.id) {
+        product.destroy();
+      }
+    })
     .then(result => {
       res.redirect('/admin/products');
     })
