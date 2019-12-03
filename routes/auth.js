@@ -27,7 +27,13 @@ router.post(
       'Please enter a password with only numbers and text and atleast 5 characters'
     )
       .isLength({ min: 5 })
-      .isAlphanumeric()
+      .isAlphanumeric(),
+    body('confrimPassword').custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords doesn't match");
+      }
+      return true; //for sucess case
+    })
   ],
   authController.postSignup
 );
