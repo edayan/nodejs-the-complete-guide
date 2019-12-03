@@ -89,8 +89,9 @@ exports.postSignup = (req, res, next) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   const { errors } = validationResult(req);
+  console.log('errors', errors);
 
-  if (!errors.isEmpty) {
+  if (errors && errors.length > 0 && !errors.isEmpty) {
     return res.status(422).render('auth/signup', {
       path: '/signup',
       pageTitle: 'Signup',
