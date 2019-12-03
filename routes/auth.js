@@ -1,6 +1,7 @@
 const express = require('express');
 const { check, body } = require('express-validator');
 const authController = require('../controllers/auth');
+const User = require('../models/user');
 
 const router = express.Router();
 
@@ -20,7 +21,13 @@ router.post(
         if (value === 'test@test.com') {
           throw new Error('This email is forbidden');
         }
-        return true; //for sucess case
+
+        return User.findOne({ where: { email: value } }).then(userDoc => {
+          if (userDoc) {
+            return Promise.reject('Email exists already');
+          }
+          //return true; //for sucess case
+        });
       }),
     body(
       'password', // checks for password in body only

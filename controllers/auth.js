@@ -87,7 +87,6 @@ exports.getSignup = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
   const { errors } = validationResult(req);
   console.log('errors', errors);
 
@@ -99,39 +98,29 @@ exports.postSignup = (req, res, next) => {
       errorMessage: errors[0].msg
     });
   }
-  User.findOne({ where: { email: email } })
-    .then(userDoc => {
-      if (userDoc) {
-        req.flash('error', 'Email exists already');
-        return res.redirect('/signup');
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then(hashedPassword => {
-          const user = new User({
-            name: 'test',
-            email: email,
-            password: hashedPassword
-          });
-          return user.save();
-        })
-        .then(result => {
-          res.redirect('/login');
-          return transporter
-            .sendMail({
-              to: email,
-              from: 'shop@node-complete.com',
-              subject: 'Sign up completed',
-              html: '<h1>You have successfully signed up!</h1>'
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        });
-    })
 
-    .catch(err => {
-      console.log(err);
+  return bcrypt
+    .hash(password, 12)
+    .then(hashedPassword => {
+      const user = new User({
+        name: 'test',
+        email: email,
+        password: hashedPassword
+      });
+      return user.save();
+    })
+    .then(result => {
+      res.redirect('/login');
+      return transporter
+        .sendMail({
+          to: email,
+          from: 'shop@node-complete.com',
+          subject: 'Sign up completed',
+          html: '<h1>You have successfully signed up!</h1>'
+        })
+        .catch(err => {
+          console.log(err);
+        });
     });
 };
 
