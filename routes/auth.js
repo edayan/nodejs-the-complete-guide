@@ -10,13 +10,16 @@ router.get('/login', authController.getLogin);
 router.post(
   '/login',
   [
-    body('email', 'Please enter a valid email').isEmail(),
+    body('email', 'Please enter a valid email')
+      .isEmail()
+      .normalizeEmail(),
     body(
       'password',
       'Please enter a password with only numbers and text and atleast 5 characters'
     )
       .isLength({ min: 5 })
       .isAlphanumeric()
+      .trim()
   ],
   authController.postLogin
 );
@@ -40,13 +43,15 @@ router.post(
           }
           //return true; //for sucess case
         });
-      }),
+      })
+      .normalizeEmail(),
     body(
       'password', // checks for password in body only
       'Please enter a password with only numbers and text and atleast 5 characters'
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
     body('confirmPassword').custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Passwords doesn't match");

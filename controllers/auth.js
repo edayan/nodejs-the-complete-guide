@@ -134,12 +134,12 @@ exports.postSignup = (req, res, next) => {
   const  errors  = validationResult(req);
   console.log('errors', errors);
 
-  if (errors.isEmpty()) {
+  if (!errors.isEmpty()) {
     return res.status(422).render('auth/signup', {
       path: '/signup',
       pageTitle: 'Signup',
       isAuthenticated: false,
-      errorMessage: errors[0].msg,
+      errorMessage: errors.array()[0].msg,
       oldInput: {
         email: email,
         password: password,
