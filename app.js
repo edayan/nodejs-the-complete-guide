@@ -57,6 +57,7 @@ app.use((req, res, next) => {
   }
   User.findByPk(req.session.user.id)
     .then(user => {
+      //throw new Error ('dummy');
       if (!user) {
         next();
       }
@@ -64,7 +65,7 @@ app.use((req, res, next) => {
       next();
     })
     .catch(err => {
-      throw new Error(err);
+      next(new Error(err)) ;
     });
 });
 
