@@ -49,8 +49,14 @@ exports.postAddProduct = (req, res, next) => {
     })
     .then(result => {
       res.redirect('/admin/products');
+      //throw new Error('custom error') //to test 500
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -78,7 +84,12 @@ exports.getEditProduct = (req, res, next) => {
         isAuthenticated: req.session.isLoggedIn
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -122,7 +133,12 @@ exports.postEditProduct = (req, res, next) => {
       });
     })
 
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -138,6 +154,9 @@ exports.postDeleteProduct = (req, res, next) => {
     })
     .catch(err => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -152,5 +171,10 @@ exports.getProducts = (req, res, next) => {
         isAuthenticated: req.session.isLoggedIn
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };

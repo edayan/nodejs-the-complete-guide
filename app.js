@@ -51,11 +51,14 @@ app.use((req, res, next) => {
   }
   User.findByPk(req.session.user.id)
     .then(user => {
+      if (!user) {
+        next();
+      }
       req.user = user;
       next();
     })
     .catch(err => {
-      console.log(err);
+      throw new Error(err);
     });
 });
 
@@ -69,7 +72,12 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get('/500', errorController.get500);
 app.use(errorController.get404);
+
+app.use((error, req, res, next) => {
+  res.redirect('/500');
+});
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
