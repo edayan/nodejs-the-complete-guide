@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
@@ -29,7 +30,9 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false })); //to extract string data from request.
+app.use(multer({dest: 'images'}).single('image')); //to extract image file uploads from request.
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
@@ -65,7 +68,7 @@ app.use((req, res, next) => {
       next();
     })
     .catch(err => {
-      next(new Error(err)) ;
+      next(new Error(err));
     });
 });
 
