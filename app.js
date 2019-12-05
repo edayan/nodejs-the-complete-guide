@@ -23,6 +23,15 @@ const app = express();
 
 const csrfProtection = csrf();
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  }
+});
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -31,7 +40,7 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false })); //to extract string data from request.
-app.use(multer({dest: 'images'}).single('image')); //to extract image file uploads from request.
+app.use(multer({ storage: fileStorage }).single('image')); //to extract image file uploads from request.
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
