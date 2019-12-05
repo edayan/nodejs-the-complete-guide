@@ -23,9 +23,16 @@ const app = express();
 
 const csrfProtection = csrf();
 
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
+
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'images');
+    cb(null, 'images/');
   },
   filename: (req, file, cb) => {
     cb(null, new Date().toISOString() + '-' + file.originalname);
@@ -43,13 +50,6 @@ const fileFilter = (req, file, cb) => {
     cb(null, false); // reject this kind of file
   }
 };
-
-app.set('view engine', 'ejs');
-app.set('views', 'views');
-
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
-const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false })); //to extract string data from request.
 app.use(
@@ -104,7 +104,14 @@ app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
-  res.status(500).render('500', { pageTitle: 'Error occured', path: '/500' });
+  console.error(error);
+  res.status(500).render('500', {
+    pageTitle: 'Error occured',
+    path: '/500',
+    isAuthenticated: true, //hard coding for now TODO:check why session is undefined
+    csrfToken: req.csrfToken
+  });
+  //req.redirect('/500');
 });
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });

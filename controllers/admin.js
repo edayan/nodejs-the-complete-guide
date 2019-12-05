@@ -19,6 +19,25 @@ exports.postAddProduct = (req, res, next) => {
   const price = +req.body.price;
   const description = req.body.description;
 
+  console.log('image', image);
+  
+  if (!image) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/edit-product',
+      hasError: true,
+      editing: false,
+      product: {
+        title,
+        image,
+        price,
+        description
+      },
+      errorMessage: 'Attached file is not an image',
+      validationErrors: [],
+      isAuthenticated: req.session.isLoggedIn
+    });
+  }
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.array());
@@ -39,11 +58,13 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
 
+  const imageUrl = image.path;
+
   req.user
     .createProduct({
       title: title,
       price: price,
-      imageUrl: imageUrl,
+      image: imageUrl,
       description: description,
       userId: req.user.id
     })
