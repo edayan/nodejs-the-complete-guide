@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const sequelize = require('sequelize');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -53,16 +54,30 @@ exports.getProduct = (req, res, next) => {
 exports.getIndex = (req, res, next) => {
   const ITEMS_PER_PAGE = 2;
   const page = req.query.page;
+  let totalItems;
 
   Product.findAll({
-    offset: (page - 1) * ITEMS_PER_PAGE,
-    limit: ITEMS_PER_PAGE
+    attributes: [[sequelize.fn('COUNT', sequelize.col('id')), 'totalProducts']]
   })
+    .then(totalProducts => {
+      console.log('totalProducts', totalProducts[0].dataValues.totalProducts);
+      totalItems = totalProducts[0].dataValues.totalProducts;
+      return Product.findAll({
+        offset: (page - 1) * ITEMS_PER_PAGE,
+        limit: ITEMS_PER_PAGE
+      });
+    })
     .then(products => {
       res.render('shop/index', {
         prods: products,
         pageTitle: 'Index',
-        path: '/'
+        path: '/',
+        totalProducts: totalItems,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage : page +1,
+        previousPage : page -1,
+        lastPage: Math.ceil(totalItems/ITEMS_PER_PAGE)
       });
     })
     .catch(err => {
