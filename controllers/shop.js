@@ -15,7 +15,6 @@ exports.getProducts = (req, res, next) => {
     attributes: [[sequelize.fn('COUNT', sequelize.col('id')), 'totalProducts']]
   })
     .then(totalProducts => {
-      console.log('totalProducts', totalProducts[0].dataValues.totalProducts);
       totalItems = totalProducts[0].dataValues.totalProducts;
       return Product.findAll({
         offset: (page - 1) * ITEMS_PER_PAGE,
@@ -80,7 +79,6 @@ exports.getIndex = (req, res, next) => {
     attributes: [[sequelize.fn('COUNT', sequelize.col('id')), 'totalProducts']]
   })
     .then(totalProducts => {
-      console.log('totalProducts', totalProducts[0].dataValues.totalProducts);
       totalItems = totalProducts[0].dataValues.totalProducts;
       return Product.findAll({
         offset: (page - 1) * ITEMS_PER_PAGE,
