@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Product = require('../models/product');
+const fileHelper = require('../util/file');
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -135,7 +136,7 @@ exports.postEditProduct = (req, res, next) => {
       },
       errorMessage: errors.array()[0].msg,
       isAuthenticated: req.session.isLoggedIn,
-      validationErrors: errors.array(),
+      validationErrors: errors.array()
     });
   }
 
@@ -147,6 +148,7 @@ exports.postEditProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       if (image) {
+        fileHelper.deleteFile(product.imageUrl);
         product.imageUrl = image.path;
       }
 
@@ -170,6 +172,7 @@ exports.postDeleteProduct = (req, res, next) => {
     .then(product => {
       if (product.userId === req.user.id) {
         product.destroy();
+        return fileHelper.deleteFile(product.imageUrl);
       }
     })
     .then(result => {
