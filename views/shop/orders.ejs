@@ -1,20 +1,28 @@
 <%- include('../includes/head.ejs') %>
-    </head>
+</head>
 
-    <body>
-        <%- include('../includes/navigation.ejs') %>
-        <main>
-            <% if (orders.length <=0) { %>
-            <h1>Nothing there!</h1>
-            <% } else { %>
-                <ul>
-                    <% orders.forEach(order => {  %>
-                    <li> 
-                       <h1># <%=  order.id %></h1> 
-                      
-                    </li>
-                    <% }) %>
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <% if (orders.length <=0) { %>
+        <h1>Nothing there!</h1>
+        <% } else { %>
+        <ul>
+            <% orders.forEach(order => {  %>
+            <li class="orders__item">
+                <h5># <%=  order.id %></h5>
+                <ul class="orders__products">
+                    <% order.products.forEach( product=>{ %>
+                    <li class="orders__products-item"><%= product.dataValues.title %>(<%= product.dataValues.description %>) - <a
+                            href="invoice">invoice</a></li>
+                    <% }); %>
+
+
                 </ul>
-                <% } %>
-        </main>
-        <%- include('../includes/end.ejs') %>
+
+            </li>
+            <% }) %>
+        </ul>
+        <% } %>
+    </main>
+    <%- include('../includes/end.ejs') %>
