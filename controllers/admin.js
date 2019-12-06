@@ -64,7 +64,7 @@ exports.postAddProduct = (req, res, next) => {
     .createProduct({
       title: title,
       price: price,
-      image: imageUrl,
+      imageUrl: imageUrl,
       description: description,
       userId: req.user.id
     })
@@ -73,7 +73,6 @@ exports.postAddProduct = (req, res, next) => {
       //throw new Error('custom error') //to test 500
     })
     .catch(err => {
-      console.log(err);
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);

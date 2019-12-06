@@ -32,10 +32,10 @@ const authRoutes = require('./routes/auth');
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'images/');
+    cb(null, 'images');
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + '-' + file.originalname);
+    cb(null, file.originalname);
   }
 });
 
@@ -52,10 +52,10 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(bodyParser.urlencoded({ extended: false })); //to extract string data from request.
-app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }) //to extract image file uploads from request.
-    .single('image')
-);
+
+const upload = multer({ storage: fileStorage, fileFilter: fileFilter }) //to extract image file uploads from request.
+  .single('image');
+app.use(upload);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
