@@ -58,6 +58,7 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }) //to ext
 app.use(upload);
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images'))); //if a request comes in with 'images' then serve 'images' folder statically
 app.use(
   session({
     secret: 'my long string secret',
