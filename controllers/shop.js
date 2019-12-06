@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
@@ -216,5 +219,22 @@ exports.getCheckout = (req, res, next) => {
   res.rener('/shop/checkout', {
     pth: '/checkout',
     pageTitle: 'Checkout'
+  });
+};
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+  const invoiceName = 'invoice-' + orderId + '.pdf';
+  const invoicePath = path.join('data', 'invoices', invoiceName);
+  fs.readFile(invoicePath, (err, data) => {
+    if (err) {
+      next(err);
+    }
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="' + invoiceName + '"'
+    );
+    res.send(data);
   });
 };

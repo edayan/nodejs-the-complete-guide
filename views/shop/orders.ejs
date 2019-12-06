@@ -14,7 +14,7 @@
                 <ul class="orders__products">
                     <% order.products.forEach( product=>{ %>
                     <li class="orders__products-item"><%= product.dataValues.title %>(<%= product.dataValues.description %>) - <a
-                            href="invoice">invoice</a></li>
+                            href="/orders/<%=order.id%>">invoice</a></li>
                     <% }); %>
 
 
