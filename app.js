@@ -54,7 +54,7 @@ const fileFilter = (req, file, cb) => {
 app.use(bodyParser.urlencoded({ extended: false })); //to extract string data from request.
 
 const upload = multer({ storage: fileStorage, fileFilter: fileFilter }) //to extract image file uploads from request.
-  .single('image');
+  .single('image'); //should match the 'name' of image in the form
 app.use(upload);
 
 app.use(express.static(path.join(__dirname, 'public')));
