@@ -7,13 +7,33 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  const ITEMS_PER_PAGE = 1;
+  const page = +req.query.page || 1;
+  let totalItems;
+
+  Product.findAll({
+    attributes: [[sequelize.fn('COUNT', sequelize.col('id')), 'totalProducts']]
+  })
+    .then(totalProducts => {
+      console.log('totalProducts', totalProducts[0].dataValues.totalProducts);
+      totalItems = totalProducts[0].dataValues.totalProducts;
+      return Product.findAll({
+        offset: (page - 1) * ITEMS_PER_PAGE,
+        limit: ITEMS_PER_PAGE
+      });
+    })
     .then(products => {
       res.render('shop/product-list', {
         prods: products,
         pageTitle: 'All Products',
         path: '/products',
-        isAuthenticated: req.session.isLoggedIn
+        totalProducts: totalItems,
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
       });
     })
     .catch(err => {
@@ -75,9 +95,9 @@ exports.getIndex = (req, res, next) => {
         totalProducts: totalItems,
         currentPage: page,
         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-        hasPreviousPage: (page > 1),
-        nextPage: (page + 1),
-        previousPage: (page - 1),
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
         lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
       });
     })
