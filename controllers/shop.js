@@ -52,8 +52,8 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  const ITEMS_PER_PAGE = 2;
-  const page = req.query.page;
+  const ITEMS_PER_PAGE = 1;
+  const page = +req.query.page || 1;
   let totalItems;
 
   Product.findAll({
@@ -73,11 +73,12 @@ exports.getIndex = (req, res, next) => {
         pageTitle: 'Index',
         path: '/',
         totalProducts: totalItems,
+        currentPage: page,
         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-        hasPreviousPage: page > 1,
-        nextPage : page +1,
-        previousPage : page -1,
-        lastPage: Math.ceil(totalItems/ITEMS_PER_PAGE)
+        hasPreviousPage: (page > 1),
+        nextPage: (page + 1),
+        previousPage: (page - 1),
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
       });
     })
     .catch(err => {
