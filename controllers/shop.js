@@ -51,7 +51,13 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.findAll()
+  const ITEMS_PER_PAGE = 2;
+  const page = req.query.page;
+
+  Product.findAll({
+    offset: (page - 1) * ITEMS_PER_PAGE,
+    limit: ITEMS_PER_PAGE
+  })
     .then(products => {
       res.render('shop/index', {
         prods: products,
