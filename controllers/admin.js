@@ -186,6 +186,23 @@ exports.postDeleteProduct = (req, res, next) => {
     });
 };
 
+exports.deleteProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  Product.findByPk(prodId)
+    .then(product => {
+      if (product.userId === req.user.id) {
+        product.destroy();
+        return fileHelper.deleteFile(product.imageUrl);
+      }
+    })
+    .then(result => {
+      res.status(200).json({ message: 'Success!' });
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Deleting product failed.' });
+    });
+};
+
 exports.getProducts = (req, res, next) => {
   req.user
     .getProducts()
