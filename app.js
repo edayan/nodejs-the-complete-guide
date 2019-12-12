@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -6,6 +7,9 @@ const session = require('express-session');
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const multer = require('multer');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
@@ -19,7 +23,15 @@ const OrderItem = require('./models/order-item');
 
 var SequelizeStore = require('connect-session-sequelize')(session.Store);
 
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+);
+
 const app = express();
+app.use(helmet());
+app.use(compression());
+app.use(morgan('combined', { stream: accessLogStream }));
 
 const csrfProtection = csrf();
 
@@ -130,7 +142,7 @@ sequelize
   //.sync({force: true})// overwrite the existing tables
   .sync()
   .then(user => {
-    const PORT = 3000;
+    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`App listening in port:${PORT}`);
     });

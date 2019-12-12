@@ -1,0 +1,9 @@
+{
+    "env": {
+        "DB_NAME": "node_complete",
+        "DB_USER": "root",
+        "DB_PASSWORD": "root",
+        "DB_HOST": "localhost",
+        "PORT" : "3000"
+    }
+}
